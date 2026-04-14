@@ -18,8 +18,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Configure Apache MPM and modules
-RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
+# Fix MPM conflict - remove all MPMs then enable only prefork + rewrite
+RUN find /etc/apache2/mods-enabled -name 'mpm_*' -delete \
+    && a2enmod mpm_prefork rewrite
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
