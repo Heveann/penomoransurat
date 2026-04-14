@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\KodeKearsipan;
 use App\Models\SuratKeluar;
 
+// Health check endpoint for Railway deployment
+Route::get('/health', function () {
+    return response('OK', 200);
+});
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
