@@ -32,13 +32,7 @@ done
 php artisan storage:link --force 2>/dev/null || true
 
 # Fix permissions
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
-# Update Apache port to match Railway's PORT env var
-if [ ! -z "$PORT" ]; then
-    echo "==> Configuring Apache on port $PORT..."
-    sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
-fi
-
-echo "==> Starting Apache..."
-exec apache2-foreground
+echo "==> Starting Laravel server on port ${PORT:-8080}..."
+exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
